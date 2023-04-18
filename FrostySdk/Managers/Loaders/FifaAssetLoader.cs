@@ -45,13 +45,13 @@ namespace FrostySdk.Managers
                         {
                             parent.m_superBundles.Add(new SuperBundleEntry { Name = sbName });
                             sbIndex = parent.m_superBundles.Count - 1;
+                            parent.ReportProgress(parent.m_superBundles.Count, parent.m_fileSystem.SuperBundleCount);
                         }
 
                         parent.WriteToLog("Loading data ({0})", sbName);
-                        parent.m_superBundles.Add(new SuperBundleEntry { Name = sbName });
 
                         string sbPath = sbName;
-                        if (catalog.SuperBundles[sbName])
+                        if (catalog.SuperBundles[sbName].Item1)
                             sbPath = sbName.Replace("win32", catalog.Name);
 
 #if ENABLE_LCU
@@ -248,7 +248,7 @@ namespace FrostySdk.Managers
                                             int dataSize = reader.ReadInt();
 
                                             if (!parent.m_chunkList.ContainsKey(guid))
-                                                parent.m_chunkList.Add(guid, new ChunkAssetEntry() { FirstMip = -1 });
+                                                parent.m_chunkList.Add(guid, new ChunkAssetEntry());
 
                                             ChunkAssetEntry chunk = parent.m_chunkList[guid];
                                             chunk.Id = guid;
@@ -259,8 +259,7 @@ namespace FrostySdk.Managers
                                                 CasPath = parent.m_fileSystem.GetFilePath(fileIndex),
                                                 DataOffset = dataOffset
                                             };
-
-                                            parent.m_chunkList[guid].IsTocChunk = true;
+                                            chunk.SuperBundles.Add(sbIndex);
                                             reader.Position = pos;
                                         }
                                     }

@@ -151,6 +151,8 @@ namespace Frosty.Core.Legacy
 
             App.AssetManager.RevertAsset(lfe);
 
+            ChunkAssetEntry orig = App.AssetManager.GetChunkEntry(lfe.ChunkId);
+
             Guid guid = App.AssetManager.AddChunk(data, GenerateDeterministicGuid(lfe));
             foreach (LegacyFileEntry.ChunkCollectorInstance inst in lfe.CollectorInstances)
             {
@@ -165,7 +167,10 @@ namespace Frosty.Core.Legacy
                 inst.ModifiedEntry.CompressedSize = assetChunkEntry.ModifiedEntry.Data.Length;
 
                 // @temp
-                assetChunkEntry.ModifiedEntry.AddToChunkBundle = true;
+                foreach (int sbId in orig.SuperBundles)
+                {
+                    assetChunkEntry.AddToSuperBundle(sbId);
+                }
                 assetChunkEntry.ModifiedEntry.UserData = "legacy;" + lfe.Name;
 
                 // link to main ebx

@@ -56,6 +56,8 @@
     <ProjectReference Include="..\..\FrostySdk\FrostySdk.csproj">
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\AtlasTexturePlugin\AtlasTexturePlugin.csproj" />
+    <ProjectReference Include="..\MeshSetPlugin\MeshSetPlugin.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,7 +73,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y $(TargetPath) $(SolutionDir)$(OutDir)Plugins\" />
+    <Exec Command="xcopy /Y &quot;$(TargetPath)&quot; &quot;$(SolutionDir)$(OutDir)Plugins\&quot;" />
   </Target>
 
 </Project>

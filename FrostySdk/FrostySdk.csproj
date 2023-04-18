@@ -111,6 +111,7 @@
     <Compile Include="IO\EbxReaderRiff.cs" />
     <Compile Include="IO\EbxReaderV2.cs" />
     <Compile Include="IO\EbxSharedTypeDescriptors.cs" />
+    <Compile Include="IO\EbxWriterRiff.cs" />
     <Compile Include="IO\EbxWriter.cs" />
     <Compile Include="IO\EbxXmlWriter.cs" />
     <Compile Include="IO\LegacyBinarySbReader.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Sha1.cs" />
     <Compile Include="TypeLibrary.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Utils\HuffmanDecoder.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Profiles.bin" />
@@ -161,6 +163,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Profiles\BFVSDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Profiles\DeadSpaceSDK.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Profiles\DragonAgeSDK.dll">
@@ -215,6 +220,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Profiles\NFSHEATSDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Profiles\NFSUnboundSDK.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Profiles\PVZ1SDK.dll">

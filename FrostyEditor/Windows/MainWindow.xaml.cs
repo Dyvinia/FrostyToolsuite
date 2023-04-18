@@ -330,10 +330,8 @@ namespace FrostyEditor.Windows
             else
             {
                 string selectedProfileName = FrostyProfileSelectWindow.Show();
-                if (!string.IsNullOrEmpty(selectedProfileName))
+                if (!string.IsNullOrEmpty(selectedProfileName) && SelectProfile(selectedProfileName))
                 {
-                    SelectProfile(selectedProfileName);
-                    
                     NewProject();
                     
                     UpdateUI(true);
@@ -465,13 +463,15 @@ namespace FrostyEditor.Windows
             NewProject();
         }
 
-        private static void SelectProfile(string profile)
+        private static bool SelectProfile(string profile)
         {
             Frosty.Core.App.ClearProfileData();
-            Frosty.Core.App.LoadProfile(profile);
+            bool result = Frosty.Core.App.LoadProfile(profile);
 
             App.InitDiscordRpc();
             App.UpdateDiscordRpc("Initializing");
+
+            return result;
         }
 
         private void UpdateUI(bool newProject = false)
@@ -625,9 +625,14 @@ namespace FrostyEditor.Windows
             FrostyProject newProject = new FrostyProject();
             if (!newProject.Load(filename))
             {
-                // failed to load for whatever reason
-                App.Logger.LogWarning("Failed to load {0}", filename);
-                App.NotificationManager.Show("Failed to load project");
+                if (ProfilesLibrary.DataVersion != newProject.gameVersion) //user loaded project for different game
+                {
+                    App.Logger.LogWarning("Project {0} is not for {1}.", filename, ProfilesLibrary.DisplayName);
+                }
+                else //corrupt or not a frosty project
+                {
+                    App.Logger.LogWarning("Failed to load {0}", filename);
+                }
 
                 newProject = null;
             }
