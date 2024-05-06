@@ -124,11 +124,11 @@ namespace FrostyEditor.Windows
             string basePath = $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", @"/")}/Mods/Kyber";
             try
             {
-                FinalArgsTextBox.Text = $"{kyberCliTextBox.Text} start_server --no-dedicated --server-name \"Test\" --map \"{gameModesData[gamemodeComboBox.SelectedIndex].Item3[levelComboBox.SelectedIndex].Item1}\" --mode \"{gameModesData[gamemodeComboBox.SelectedIndex].Item1}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
+                FinalArgsTextBox.Text = $"\"{kyberCliTextBox.Text}\" start_server --no-dedicated --server-name \"Test\" --map \"{gameModesData[gamemodeComboBox.SelectedIndex].Item3[levelComboBox.SelectedIndex].Item1}\" --mode \"{gameModesData[gamemodeComboBox.SelectedIndex].Item1}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
             }
             catch
             {
-                FinalArgsTextBox.Text = $"{kyberCliTextBox.Text} start_server --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
+                FinalArgsTextBox.Text = $"\"{kyberCliTextBox.Text}\" start_server --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
             }
         }
 
