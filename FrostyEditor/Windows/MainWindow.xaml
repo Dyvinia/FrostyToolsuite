@@ -323,17 +323,13 @@
                                                    Margin="4 0 0 0" />
                                     </StackPanel>
                                 </Button>
-                                <Button x:Name="kyberSettingsButton"
-                                        Margin="0"
-                                        Click="kyberSettingsButton_Click"
-                                        ToolTip="Modify Kyber launch settings."
-                                        IsEnabled="false">
-                                    <StackPanel Orientation="Horizontal"
-                                                Margin="4 0 4 0">
-                                        <Image Grid.Column="0"
-                                               Source="../Images/Settings.png"
-                                               Width="16" />
-                                    </StackPanel>
+                                <Button Margin="0,0,0,0"
+                                        Height="20"
+                                        Width="20"
+                                        ToolTip="Kyber Settings"
+                                        x:Name="kyberSettingsButton"
+                                        Click="kyberSettingsButton_Click">
+                                    <Image Source="../Images/Settings.png" Width="16" />
                                 </Button>
                             </StackPanel>
                         </Border>

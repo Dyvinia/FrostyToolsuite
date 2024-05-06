@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FrostyEditor.Windows"
         xmlns:ctrl="clr-namespace:Frosty.Controls;assembly=FrostyControls"
         mc:Ignorable="d"
-        Title="KYBER Launch Settings" Height="530" Width="800"
+        Title="KYBER Launch Settings" Height="400" Width="650" SizeToContent="Height" UseLayoutRounding="True"
         ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True">
     
     <Grid Background="{StaticResource WindowBackground}">
@@ -16,73 +16,72 @@
         </Grid.RowDefinitions>
 
         <Grid Background="{StaticResource ListBackground}">
-            <DockPanel LastChildFill="True">
-                <Grid Margin="5" DockPanel.Dock="Top">
-                    <Label Content="Temp Description." FontFamily="Global User Interface" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="14"/>
-                </Grid>
+            <StackPanel Margin="5">
+                <DockPanel LastChildFill="True" Height="25">
+                    <Label Content="Kyber CLI" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                    <TextBox Grid.Column="1" x:Name="kyberCliTextBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1" Padding="4 0 0 0"/>
+                </DockPanel>
+                <DockPanel LastChildFill="True" Height="25">
+                    <Label Content="Load Order" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                    <ComboBox x:Name="loadOrderComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                </DockPanel>
                 
-                <Border DockPanel.Dock="Top" Background="{StaticResource ControlBackground}" Height="2"/>
-
-                <Grid DockPanel.Dock="Top" Margin="5">
-                    <StackPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="KYBER CLI Directory " FontFamily="Global User Interface" Width="125"/>
-                            <TextBox Grid.Column="1" x:Name="kyberCliTextBox" VerticalContentAlignment="Center" Text="" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="Load Order " FontFamily="Global User Interface" Width="125"/>
-                            <ComboBox x:Name="loadOrderComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="Gamemode " FontFamily="Global User Interface" Width="125"/>
-                            <ComboBox x:Name="gamemodeComboBox" SelectionChanged="modCategoryComboBox_SelectionChanged" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="Level " FontFamily="Global User Interface" Width="125"/>
-                            <ComboBox x:Name="levelComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="AutoStart " FontFamily="Global User Interface" Width="125"/>
-                            <ComboBox x:Name="autoStartComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="TeamId " FontFamily="Global User Interface" Width="125"/>
-                            <ComboBox x:Name="teamIdComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                        </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="Autoplayers " FontFamily="Global User Interface" Width="125"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <DockPanel LastChildFill="True">
-                                    <Label  Content="Type" FontFamily="Global User Interface" Width="75"/>
-                                    <ComboBox x:Name="autoplayerTypeComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                                </DockPanel>
-                                <DockPanel Grid.Column="1" LastChildFill="True">
-                                    <Label  Content="Team 1 " FontFamily="Global User Interface" Width="75"/>
-                                    <ComboBox x:Name="team1AutoplayerCountComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                                </DockPanel>
-                                <DockPanel Grid.Column="2" LastChildFill="True">
-                                    <Label Content="Team 2 " FontFamily="Global User Interface" Width="75"/>
-                                    <ComboBox x:Name="team2AutoplayerCountComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                                </DockPanel>
-                            </Grid>
-                        </DockPanel>
-                    </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0">
+                        <Label Content="Gamemode" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                        <ComboBox x:Name="gamemodeComboBox" SelectionChanged="modCategoryComboBox_SelectionChanged" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1">
+                        <Label Content="Level" FontFamily="Global User Interface" Width="42" HorizontalContentAlignment="Right"/>
+                        <ComboBox x:Name="levelComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                    </DockPanel>
                 </Grid>
-                <Grid DockPanel.Dock="Top" Margin="5">
-                    <StackPanel>
-                        <DockPanel LastChildFill="True">
-                            <Label Content="Launch Commands: " FontFamily="Global User Interface" HorizontalAlignment="Center"/>
-                        </DockPanel>
-                    </StackPanel>
-                </Grid>
+                <DockPanel>
+                    <Label Content="AutoStart" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                    <ComboBox x:Name="autoStartComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                </DockPanel>
+                <DockPanel>
+                    <Label Content="TeamId" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                    <ComboBox x:Name="teamIdComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                </DockPanel>
 
-                <TextBox x:Name="launchCommandTextBox" Margin="5" BorderThickness="1" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
-            </DockPanel>
+                <DockPanel>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" x:Name="Team2APColumn"/>
+                        </Grid.ColumnDefinitions>
+                        <DockPanel LastChildFill="True">
+                            <Label Content="Autoplayers" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                            <ComboBox x:Name="autoplayerTypeComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                        </DockPanel>
+                        <DockPanel Grid.Column="1" LastChildFill="True">
+                            <Label x:Name="Team1APLabel" Content="Team 1" FontFamily="Global User Interface" HorizontalContentAlignment="Right"/>
+                            <ComboBox x:Name="team1AutoplayerCountComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                        </DockPanel>
+                        <DockPanel Grid.Column="2" LastChildFill="True">
+                            <Label Content="Team 2" FontFamily="Global User Interface" HorizontalContentAlignment="Right"/>
+                            <ComboBox x:Name="team2AutoplayerCountComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
+
+                <DockPanel Height="25">
+                    <Label Content="Commands" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
+                    <TextBox x:Name="launchCommandTextBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1" Padding="4 0 0 0"/>
+                </DockPanel>
+                <Separator Visibility="Hidden"/>
+                <StackPanel>
+                    <Label Content="Final Arguments" FontFamily="Global User Interface" HorizontalContentAlignment="Center"/>
+                    <TextBox x:Name="FinalArgsTextBox" Margin="1" BorderThickness="1" IsReadOnly="True" Height="60" TextWrapping="Wrap" Foreground="#696969"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
 
         <Border Grid.Row="1">
