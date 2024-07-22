@@ -693,7 +693,7 @@ namespace FrostyEditor
                 foreach(string command in KyberSettings.LaunchCommands)
                     commands.Add($"{command}");
 
-                using (StreamWriter writer = new StreamWriter("Mods/Kyber/Kyber-Commands.txt"))
+                using (StreamWriter writer = new("Mods/Kyber/Kyber-Commands.txt"))
                 {
                     foreach (string str in commands)
                         writer.WriteLine(str);
@@ -703,7 +703,7 @@ namespace FrostyEditor
                 //  Execute kyber_cli.exe
                 //
 
-                string cliCommand = $"start_server --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
+                string cliCommand = $"start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
                 ProcessStartInfo startInfo = new(KyberSettings.CliDirectory)
                 {
                     Arguments = cliCommand,
