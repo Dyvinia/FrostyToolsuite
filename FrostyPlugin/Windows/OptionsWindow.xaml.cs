@@ -295,8 +295,8 @@ namespace Frosty.Core.Windows
 
             try
             {
-                string openCommand = Registry.CurrentUser.OpenSubKey("Software\\Classes\\" + KeyName).OpenSubKey("shell").OpenSubKey("open").OpenSubKey("command").GetValue("").ToString();
-                return openCommand.Contains(OpenWith);
+                string openCommand = Registry.CurrentUser.OpenSubKey("Software\\Classes\\" + KeyName)?.OpenSubKey("shell")?.OpenSubKey("open")?.OpenSubKey("command")?.GetValue("")?.ToString();
+                return openCommand?.Contains(OpenWith) ?? false;
             }
             catch
             {
