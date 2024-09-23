@@ -123,10 +123,12 @@ namespace FrostyEditor
             if (ProfilesLibrary.EnableExecution)
             {
                 CommandBindings.Add(new CommandBinding(launchGameCmd, launchButton_Click));
-                CommandBindings.Add(new CommandBinding(kyberLaunchGameCmd, kyberLaunchButton_Click));
+                //CommandBindings.Add(new CommandBinding(kyberLaunchGameCmd, kyberLaunchButton_Click));
+                CommandBindings.Add(new CommandBinding(kyberLaunchGameCmd, kyberGameLaunchButton_Click));
                 CommandBindings.Add(new CommandBinding(kyberSettingsGameCmd, kyberSettingsButton_Click));
                 launchButton.IsEnabled = true;
                 kyberLaunchButton.IsEnabled = true;
+                kyberGameLaunchButton.IsEnabled = true;
                 kyberSettingsButton.IsEnabled = true;
             }
 
@@ -716,6 +718,133 @@ namespace FrostyEditor
 
             GC.Collect();
         }
+
+        private void kyberGameLaunchButton_Click(object sender, RoutedEventArgs e)
+        {
+            KyberJsonSettings jsonSettings = GetKyberJsonSettings();
+            if (!File.Exists(KyberSettings.CliDirectory))
+            {
+                FrostyOpenFileDialog ofd = new("Set Kyber CLI", "*.exe (kyber_cli)|*.exe", "Kyber CLI");
+                if (ofd.ShowDialog())
+                {
+                    if (Path.GetFileNameWithoutExtension(ofd.FileName) != "kyber_cli")
+                    {
+                        App.Logger.LogError($"Kyber Launcher:\tAborting Launch:\tCould not find kyber_cli.exe");
+                        return;
+                    }
+                    else
+                    {
+                        KyberSettings.CliDirectory = ofd.FileName;
+                        Config.Save();
+                    }
+                }
+                else
+                {
+                    App.Logger.LogError($"Kyber Launcher:\tAborting Launch:\tCould not find kyber_cli.exe");
+                    return;
+                }
+            }
+            CancellationTokenSource cancelToken = new();
+            string editorModName = "KyberMod.fbmod";
+            // create temporary editor mod
+            ModSettings editorSettings = new() { Title = editorModName, Author = "Frosty Editor", Version = App.Version, Category = "Editor" };
+
+
+            bool cancelled = false;
+            try
+            {
+                // run mod applying process
+                FrostyTaskWindow.Show("Launching", "", (task) =>
+                {
+                    try
+                    {
+                        foreach (ExecutionAction executionAction in App.PluginManager.ExecutionActions)
+                        {
+                            executionAction.PreLaunchAction(task.TaskLogger, PluginManagerType.Editor, cancelToken.Token);
+                        }
+
+                        task.Update("Exporting Mod");
+                        ExportMod(editorSettings, $"Mods/Kyber/{editorModName}", true, cancelToken.Token);
+                        App.Logger.Log($"Editor Mod Saved As {editorModName}");
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        cancelled = true;
+                        // swollow
+                        foreach (ExecutionAction executionAction in App.PluginManager.ExecutionActions)
+                        {
+                            executionAction.PostLaunchAction(task.TaskLogger, PluginManagerType.ModManager, cancelToken.Token);
+                        }
+                    }
+
+                }, showCancelButton: true, cancelCallback: (task) => cancelToken.Cancel());
+            }
+            catch (OperationCanceledException)
+            {
+                // process was cancelled
+                App.Logger.Log("Launch Cancelled");
+                cancelled = true;
+            }
+            if (!cancelled)
+            {
+                //
+                // Export Mod Order Json
+                //
+
+                KyberModsJson exportJson = new();
+                string basePath = $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", @"/")}/Mods/Kyber";
+                exportJson.basePath = basePath;
+
+                List<string> fbmodNames = [];
+                foreach (KyberLoadOrderJsonSettings loadOrder in jsonSettings.LoadOrders.Where(order => order.Name == KyberSettings.SelectedLoadOrder))
+                {
+                    foreach (string mod in loadOrder.FbmodNames)
+                        fbmodNames.Add(mod.EndsWith(".fbmod") ? mod : $"{mod}.fbmod");
+                }
+                if (!fbmodNames.Contains(editorModName))
+                    fbmodNames.Add(editorModName);
+
+                List<string> unfoundMods = [];
+                exportJson.modPaths = [];
+                foreach (string modName in new List<string>(fbmodNames))
+                {
+                    if (!File.Exists($@"{basePath}/{modName}"))
+                    {
+                        unfoundMods.Add(modName);
+                        fbmodNames.Remove(modName);
+                    }
+                    else
+                        exportJson.modPaths.Add(modName);
+                }
+
+                if (unfoundMods.Count > 0)
+                {
+                    App.Logger.LogError($"Kyber Launcher:\tCould not find following \"{KyberSettings.SelectedLoadOrder}\" load order mods:\t{string.Join(", \t", unfoundMods)}");
+                }
+
+                File.WriteAllText("Mods/Kyber/Kyber-Launch.json", JsonConvert.SerializeObject(exportJson, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented
+                }));
+
+                //
+                //  Execute kyber_cli.exe
+                //
+
+                string cliCommand = $"start_game --verbose --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\"";
+                ProcessStartInfo startInfo = new(KyberSettings.CliDirectory)
+                {
+                    Arguments = cliCommand,
+                    UseShellExecute = false,
+                    CreateNoWindow = false, // Show cmd window
+                    WorkingDirectory = Path.GetDirectoryName(KyberSettings.CliDirectory) // Set the working directory here
+                };
+                Process.Start(startInfo);
+            }
+
+            GC.Collect();
+        }
+
 
         private void kyberSettingsButton_Click(object sender, RoutedEventArgs e)
         {
