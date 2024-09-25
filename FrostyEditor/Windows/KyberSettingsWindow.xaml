@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FrostyEditor.Windows"
         xmlns:ctrl="clr-namespace:Frosty.Controls;assembly=FrostyControls"
         mc:Ignorable="d"
-        Title="KYBER Launch Settings" Height="400" Width="650" SizeToContent="Height" UseLayoutRounding="True"
+        Title="KYBER Launch Settings" Height="290" Width="650" SizeToContent="Height" UseLayoutRounding="True"
         ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True">
     
     <Grid Background="{StaticResource WindowBackground}">
@@ -21,10 +21,10 @@
                     <Label Content="Kyber CLI" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
                     <TextBox Grid.Column="1" x:Name="kyberCliTextBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1" Padding="4 0 0 0"/>
                 </DockPanel>
-                <DockPanel LastChildFill="True" Height="25">
+                <!--<DockPanel LastChildFill="True" Height="25">
                     <Label Content="Load Order" FontFamily="Global User Interface" Width="73" HorizontalContentAlignment="Right"/>
                     <ComboBox x:Name="loadOrderComboBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1"/>
-                </DockPanel>
+                </DockPanel>-->
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -77,10 +77,10 @@
                     <TextBox x:Name="launchCommandTextBox" VerticalContentAlignment="Center" Margin="1" BorderThickness="1" Padding="4 0 0 0"/>
                 </DockPanel>
                 <Separator Visibility="Hidden"/>
-                <StackPanel>
+                <!--<StackPanel>
                     <Label Content="Final Arguments" FontFamily="Global User Interface" HorizontalContentAlignment="Center"/>
                     <TextBox x:Name="FinalArgsTextBox" Margin="1" BorderThickness="1" IsReadOnly="True" Height="60" TextWrapping="Wrap" Foreground="#696969"/>
-                </StackPanel>
+                </StackPanel>-->
             </StackPanel>
         </Grid>
 
@@ -89,6 +89,8 @@
                 <DockPanel LastChildFill="False">
                     <Button x:Name="cancelButton" Content="Cancel" DockPanel.Dock="Left" Width="75" Click="cancelButton_Click"/>
                     <Button x:Name="saveButton" Content="Save" DockPanel.Dock="Right" Width="75" Click="saveButton_Click"/>
+
+                    <Button x:Name="copyArgsButton" Content="Copy Arguments" DockPanel.Dock="Right" Width="120" Margin="0 0 5 0"/>
                 </DockPanel>
             </Grid>
         </Border>

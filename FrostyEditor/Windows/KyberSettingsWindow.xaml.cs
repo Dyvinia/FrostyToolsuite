@@ -57,7 +57,7 @@ namespace FrostyEditor.Windows
 
     public class KyberJsonSettings
     {
-        public List<KyberGamemodeJsonSettings> GamemodeOverrides { get; set; }
+        //public List<KyberGamemodeJsonSettings> GamemodeOverrides { get; set; }
         public List<KyberLevelJsonSettings> LevelOverrides { get; set; }
         public List<KyberLoadOrderJsonSettings> LoadOrders { get; set; }
         public KyberJsonSettings()
@@ -111,24 +111,30 @@ namespace FrostyEditor.Windows
 
             Loaded += ModSettingsWindow_Loaded;
 
-            UpdateArgsPreview();
-
-            gamemodeComboBox.SelectionChanged += (_, _) => UpdateArgsPreview();
-            levelComboBox.SelectionChanged += (_, _) => UpdateArgsPreview();
-
             autoplayerTypeComboBox.SelectionChanged += (_, _) => UpdateAutoplayerCounts();
+
+            copyArgsButton.Click += (_, _) => { 
+                try
+                {
+                    Clipboard.SetText(GetArgs());
+                }
+                catch
+                {
+
+                }
+            };
         }
 
-        private void UpdateArgsPreview()
+        private string GetArgs()
         {
             string basePath = $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", @"/")}/Mods/Kyber";
             try
             {
-                FinalArgsTextBox.Text = $"\"{kyberCliTextBox.Text}\" start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{gameModesData[gamemodeComboBox.SelectedIndex].Item3[levelComboBox.SelectedIndex].Item1}\" --mode \"{gameModesData[gamemodeComboBox.SelectedIndex].Item1}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
+                return $"\"{kyberCliTextBox.Text}\" start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{gameModesData[gamemodeComboBox.SelectedIndex].Item3[levelComboBox.SelectedIndex].Item1}\" --mode \"{gameModesData[gamemodeComboBox.SelectedIndex].Item1}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
             }
             catch
             {
-                FinalArgsTextBox.Text = $"\"{kyberCliTextBox.Text}\" start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
+                return $"\"{kyberCliTextBox.Text}\" start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
             }
         }
 
@@ -233,8 +239,8 @@ namespace FrostyEditor.Windows
                 team1AutoplayerCountComboBox.Items.Add(i);
                 team2AutoplayerCountComboBox.Items.Add(i);
             }
-            loadOrderComboBox.Items.Add("No Order");
-            jsonSettings.LoadOrders.ForEach(loadOrder => loadOrderComboBox.Items.Add(loadOrder.Name));
+            //loadOrderComboBox.Items.Add("No Order");
+            //jsonSettings.LoadOrders.ForEach(loadOrder => loadOrderComboBox.Items.Add(loadOrder.Name));
 
             autoplayerTypeComboBox.Items.Add("No Bots");
             autoplayerTypeComboBox.Items.Add("Dummy Bots");
@@ -247,13 +253,30 @@ namespace FrostyEditor.Windows
             EbxAssetEntry modesEntry = App.AssetManager.GetEbxEntry("UI/Data/GameModes/GameModes");
             dynamic modesRoot = App.AssetManager.GetEbx(modesEntry).RootObject;
 
+            List<KyberGamemodeJsonSettings> baseModes =
+                [
+                    new() { Name = "Galactic Assault", ModeId = "PlanetaryBattles", PlayerCount = 40},
+                    new() { Name = "Supremacy", ModeId = "Mode1", PlayerCount = 64},
+                    new() { Name = "COOP Attack", ModeId = "Mode9", PlayerCount = 20},
+                    new() { Name = "COOP Defend", ModeId = "ModeDefend", PlayerCount = 20},
+                    new() { Name = "Ewok Hunt", ModeId = "Mode3", PlayerCount = 0},
+                    new() { Name = "Extraction", ModeId = "Mode5", PlayerCount = 16},
+                    new() { Name = "Hero Showdown", ModeId = "Mode6", PlayerCount = 4},
+                    new() { Name = "Starfighter HvsV", ModeId = "Mode7", PlayerCount = 6},
+                    new() { Name = "Jetpack Cargo", ModeId = "ModeC", PlayerCount = 16},
+                    new() { Name = "Strike", ModeId = "PlanetaryMissions", PlayerCount = 16},
+                    new() { Name = "Blast", ModeId = "Blast", PlayerCount = 16},
+                    new() { Name = "Heroes Versus Villains", ModeId = "HeroesVersusVillains", PlayerCount = 6},
+                    new() { Name = "Starfighter Assault", ModeId = "SpaceBattle", PlayerCount = 24}
+                ];
+
             foreach (PointerRef modePr in modesRoot.GameModes)
             {
                 EbxAssetEntry modeEntry = App.AssetManager.GetEbxEntry(modePr.External.FileGuid);
                 if (modeEntry != null)
                 {
                     dynamic modeRoot = App.AssetManager.GetEbx(modeEntry).RootObject;
-                    string modeName = $"{ConvertToTitleCase(modeRoot.AurebeshGameModeName)} \t[{modeRoot.GameModeId}]";
+                    string modeName = $"{ConvertToTitleCase(modeRoot.AurebeshGameModeName)} [{modeRoot.GameModeId}]";
 
                     List<(string, string)> levelPairs = [];
                     foreach (PointerRef levelPr in modeRoot.Levels)
@@ -290,9 +313,9 @@ namespace FrostyEditor.Windows
                             levelPairs[i] = (pair.Item1, $"{pair.Item2} [{pair.Item1}]");
                     }
                     int playerCount = modeRoot.NumberOfPlayers;
-                    foreach (KyberGamemodeJsonSettings jsonGamemode in jsonSettings.GamemodeOverrides.Where(gamemodeInfo => gamemodeInfo.ModeId == modeRoot.GameModeId))
+                    foreach (KyberGamemodeJsonSettings jsonGamemode in baseModes.Where(gamemodeInfo => gamemodeInfo.ModeId == modeRoot.GameModeId))
                     {
-                        modeName = $"{jsonGamemode.Name} \t[{modeRoot.GameModeId}]";
+                        modeName = $"{jsonGamemode.Name} [{modeRoot.GameModeId}]";
                         playerCount = jsonGamemode.PlayerCount;
                     }
                     if (modeName.StartsWith("DO NOT USE"))
@@ -300,7 +323,7 @@ namespace FrostyEditor.Windows
                     gameModesData.Add((modeRoot.GameModeId, modeName, levelPairs, playerCount));
                 }
             }
-            foreach (KyberGamemodeJsonSettings jsonGamemode in jsonSettings.GamemodeOverrides.Where(gamemodeInfo => !gameModesData.Select(modeData => modeData.Item1).Contains(gamemodeInfo.ModeId)))
+            foreach (KyberGamemodeJsonSettings jsonGamemode in baseModes.Where(gamemodeInfo => !gameModesData.Select(modeData => modeData.Item1).Contains(gamemodeInfo.ModeId)))
             {
                 List<(string, string)> levelPairs = new List<(string, string)>();
                 foreach (KyberLevelJsonSettings levelJsonSettings in jsonSettings.LevelOverrides.Where(levelOverride => levelOverride.ModeIds.Contains(jsonGamemode.ModeId)).ToList())
@@ -316,7 +339,7 @@ namespace FrostyEditor.Windows
 
 
             gameModesData = [.. gameModesData.OrderBy(data => data.Item2)];
-            gameModesData.Insert(0, ("NOGAMEMODE", "Main Menu \t[FRONTEND]", new List<(string, string)>() { ("win32/Levels/Frontend/Frontend", "Frontend") }, 0));
+            //gameModesData.Insert(0, ("NOGAMEMODE", "Main Menu \t[FRONTEND]", new List<(string, string)>() { ("win32/Levels/Frontend/Frontend", "Frontend") }, 0));
             foreach (var item in gameModesData)
             {
                 gamemodeComboBox.Items.Add(item.Item2);
@@ -325,7 +348,7 @@ namespace FrostyEditor.Windows
 
             //Set selected index
             kyberCliTextBox.Text = KyberSettings.CliDirectory;
-            loadOrderComboBox.SelectedIndex = loadOrderComboBox.Items.Contains(KyberSettings.SelectedLoadOrder) ? loadOrderComboBox.Items.IndexOf(KyberSettings.SelectedLoadOrder) : 0;
+            //loadOrderComboBox.SelectedIndex = loadOrderComboBox.Items.Contains(KyberSettings.SelectedLoadOrder) ? loadOrderComboBox.Items.IndexOf(KyberSettings.SelectedLoadOrder) : 0;
             gamemodeComboBox.SelectedIndex = gameModesData.Select(data => data.Item1).Contains(KyberSettings.GameMode) ? gameModesData.Select(data => data.Item1).ToList().IndexOf(KyberSettings.GameMode) : 0;
             RepopulateLevelComboBox(0);
             levelComboBox.SelectedIndex = gameModesData[gamemodeComboBox.SelectedIndex].Item3.Select(data => data.Item1).Contains(KyberSettings.Level) ? gameModesData[gamemodeComboBox.SelectedIndex].Item3.Select(data => data.Item1).ToList().IndexOf(KyberSettings.Level) : 0;
@@ -349,16 +372,16 @@ namespace FrostyEditor.Windows
             }
         }
 
-        private void cancelButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
 
-        private void saveButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             KyberSettings.CliDirectory = kyberCliTextBox.Text;
-            KyberSettings.SelectedLoadOrder = loadOrderComboBox.Text;
+            //KyberSettings.SelectedLoadOrder = loadOrderComboBox.Text;
             KyberSettings.GameMode = gameModesData[gamemodeComboBox.SelectedIndex].Item1;
             KyberSettings.Level = gameModesData[gamemodeComboBox.SelectedIndex].Item3[levelComboBox.SelectedIndex].Item1;
             KyberSettings.Autostart = autoStartComboBox.Text == "Enabled";

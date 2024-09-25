@@ -306,7 +306,8 @@
                                 DockPanel.Dock="Left"
                                 RenderOptions.EdgeMode="Aliased">
                             <StackPanel Orientation="Horizontal"
-                                        Margin="6,2,6,2">
+                                        Margin="6,0,6,0">
+                                <ComboBox x:Name="loadOrderComboBox" Width="150" Height="22" Margin="0,0,0,0" Padding="4,2,4,2"/>
                                 <Button x:Name="kyberGameLaunchButton"
                                         Margin="0"
                                         Click="kyberGameLaunchButton_Click"

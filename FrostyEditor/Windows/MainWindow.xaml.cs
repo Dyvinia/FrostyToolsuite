@@ -63,6 +63,8 @@ namespace FrostyEditor
 
         private List<string> m_recentProjects = Config.Get("RecentProjects", new List<string>(), ConfigScope.Game);
 
+        private KyberJsonSettings kyberJsonSettings;
+
         public FrostyDataExplorer DataExplorer => dataExplorer;
 
         public FrostyDataExplorer LegacyExplorer => legacyExplorer;
@@ -174,6 +176,8 @@ namespace FrostyEditor
             RefreshRecentProjects();
 
             m_currentExplorer = dataExplorer;
+
+            kyberJsonSettings = GetKyberJsonSettings();
         }
 
         private void LoadMenuExtensions()
@@ -358,6 +362,15 @@ namespace FrostyEditor
             {
                 LoadProject(App.LaunchArgs, false);
             }
+
+            loadOrderComboBox.Items.Add("No Order");
+            kyberJsonSettings.LoadOrders.ForEach(loadOrder => loadOrderComboBox.Items.Add(loadOrder.Name));
+
+            loadOrderComboBox.SelectedIndex = loadOrderComboBox.Items.Contains(KyberSettings.SelectedLoadOrder) ? loadOrderComboBox.Items.IndexOf(KyberSettings.SelectedLoadOrder) : 0;
+
+            loadOrderComboBox.SelectionChanged += (s, e) => {
+                KyberSettings.SelectedLoadOrder = loadOrderComboBox.SelectedItem?.ToString();
+            };
         }
 
         private void logTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -519,39 +532,22 @@ namespace FrostyEditor
 
                 List<KyberGamemodeJsonSettings> baseModes =
                 [
-                    new() { Name = "Modded Gamemode - Example Custom Mode", ModeId = "ExampleCustomMode", PlayerCount = 40},
-                    new() { Name = "Modded Gamemode - Conquest Clone Wars", ModeId = "Conquest1CloneWars", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Conquest Original Trilogy", ModeId = "Conquest1OriginalTrilogy", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Conquest Sequel Trilogy", ModeId = "Conquest1SequelTrilogy", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Conquest Order 66", ModeId = "Conquest1Order66", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Conquest Map Specific", ModeId = "Conquest1MapSpecific", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Conquest Sandbox", ModeId = "Conquest1Sandbox", PlayerCount = 64 },
-                    new() { Name = "Modded Gamemode - Extraction HvsV", ModeId = "ExtractionHvsV", PlayerCount = 6 },
-                    new() { Name = "Custom Arcade - Blast", ModeId = "SkirmishBlast", PlayerCount = 0},
-                    new() { Name = "Custom Arcade - Onslaught", ModeId = "SkirmishOnslaught", PlayerCount = 0},
-                    new() { Name = "Custom Arcade - Duel", ModeId = "SkirmishDuel", PlayerCount = 0},
-                    new() { Name = "Custom Arcade - Starfighter Blast", ModeId = "SkirmishSpaceBlast", PlayerCount = 0},
-                    new() { Name = "Custom Arcade - Starfighter Onslaught", ModeId = "SkirmishSpaceOnslaught" , PlayerCount = 0},
-                    new() { Name = "Instant Action - Supremacy", ModeId = "Mode1", PlayerCount = 0},
-                    new() { Name = "Instant Action - Missions Attack", ModeId = "ModeF", PlayerCount = 0},
-                    new() { Name = "Instant Action - Missions Defend", ModeId = "ModeE", PlayerCount = 0},
-                    new() { Name = "Multiplayer - Galactic Assault", ModeId = "PlanetaryBattles", PlayerCount = 40},
-                    new() { Name = "Multiplayer - Supremacy", ModeId = "Mode1", PlayerCount = 64},
-                    new() { Name = "Multiplayer - COOP Attack", ModeId = "Mode9", PlayerCount = 20},
-                    new() { Name = "Multiplayer - COOP Defend", ModeId = "ModeDefend", PlayerCount = 20},
-                    new() { Name = "Multiplayer - Ewok Hunt", ModeId = "Mode3", PlayerCount = 0},
-                    new() { Name = "Multiplayer - Extraction", ModeId = "Mode5", PlayerCount = 16},
-                    new() { Name = "Multiplayer - Hero Showdown", ModeId = "Mode6", PlayerCount = 4},
-                    new() { Name = "Multiplayer - Starfighter HvsV", ModeId = "Mode7", PlayerCount = 6},
-                    new() { Name = "Multiplayer - Jetpack Cargo", ModeId = "ModeC", PlayerCount = 16},
-                    new() { Name = "Multiplayer - Strike", ModeId = "PlanetaryMissions", PlayerCount = 16},
-                    new() { Name = "Multiplayer - Blast", ModeId = "Blast", PlayerCount = 16},
-                    new() { Name = "Multiplayer - Heroes Versus Villains", ModeId = "HeroesVersusVillains", PlayerCount = 6},
-                    new() { Name = "Multiplayer - Starfighter Assault", ModeId = "SpaceBattle", PlayerCount = 24},
-                    new() { Name = "DO NOT USE - ModeX", ModeId = "ModeX", PlayerCount = 0},
+                    new() { Name = "Galactic Assault", ModeId = "PlanetaryBattles", PlayerCount = 40},
+                    new() { Name = "Supremacy", ModeId = "Mode1", PlayerCount = 64},
+                    new() { Name = "COOP Attack", ModeId = "Mode9", PlayerCount = 20},
+                    new() { Name = "COOP Defend", ModeId = "ModeDefend", PlayerCount = 20},
+                    new() { Name = "Ewok Hunt", ModeId = "Mode3", PlayerCount = 0},
+                    new() { Name = "Extraction", ModeId = "Mode5", PlayerCount = 16},
+                    new() { Name = "Hero Showdown", ModeId = "Mode6", PlayerCount = 4},
+                    new() { Name = "Starfighter HvsV", ModeId = "Mode7", PlayerCount = 6},
+                    new() { Name = "Jetpack Cargo", ModeId = "ModeC", PlayerCount = 16},
+                    new() { Name = "Strike", ModeId = "PlanetaryMissions", PlayerCount = 16},
+                    new() { Name = "Blast", ModeId = "Blast", PlayerCount = 16},
+                    new() { Name = "Heroes Vs Villains", ModeId = "HeroesVersusVillains", PlayerCount = 6},
+                    new() { Name = "Starfighter Assault", ModeId = "SpaceBattle", PlayerCount = 24}
                 ];
                 baseJsonSettings.LoadOrders = [(new() { FbmodNames = ["Instant Online Overhaul", "KyberMod"], Name = "Example Load Order" })];
-                baseJsonSettings.GamemodeOverrides = baseModes;
+                //baseJsonSettings.GamemodeOverrides = baseModes;
                 baseJsonSettings.LevelOverrides = [(new() { Name = "Custom Level Example", LevelId = "Level/Directory/Goes/Here", ModeIds = ["Mode1", "Mode8"] })];
                 File.WriteAllText(jsonName, JsonConvert.SerializeObject(baseJsonSettings, new JsonSerializerSettings
                 {
@@ -848,7 +844,7 @@ namespace FrostyEditor
 
         private void kyberSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            KyberSettingsWindow win = new KyberSettingsWindow(GetKyberJsonSettings());
+            KyberSettingsWindow win = new(kyberJsonSettings);
             win.ShowDialog();
         }
 
