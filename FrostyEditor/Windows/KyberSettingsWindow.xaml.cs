@@ -266,7 +266,7 @@ namespace FrostyEditor.Windows
                     new() { Name = "Jetpack Cargo", ModeId = "ModeC", PlayerCount = 16},
                     new() { Name = "Strike", ModeId = "PlanetaryMissions", PlayerCount = 16},
                     new() { Name = "Blast", ModeId = "Blast", PlayerCount = 16},
-                    new() { Name = "Heroes Versus Villains", ModeId = "HeroesVersusVillains", PlayerCount = 6},
+                    new() { Name = "Heroes Vs Villains", ModeId = "HeroesVersusVillains", PlayerCount = 6},
                     new() { Name = "Starfighter Assault", ModeId = "SpaceBattle", PlayerCount = 24}
                 ];
 
@@ -325,7 +325,7 @@ namespace FrostyEditor.Windows
             }
             foreach (KyberGamemodeJsonSettings jsonGamemode in baseModes.Where(gamemodeInfo => !gameModesData.Select(modeData => modeData.Item1).Contains(gamemodeInfo.ModeId)))
             {
-                List<(string, string)> levelPairs = new List<(string, string)>();
+                List<(string, string)> levelPairs = [];
                 foreach (KyberLevelJsonSettings levelJsonSettings in jsonSettings.LevelOverrides.Where(levelOverride => levelOverride.ModeIds.Contains(jsonGamemode.ModeId)).ToList())
                 {
                     if (levelPairs.Select(pair => pair.Item1).Contains(levelJsonSettings.LevelId))
