@@ -99,8 +99,6 @@ namespace FrostyEditor
             RoutedCommand addBookmarkCmd = new RoutedCommand();
             RoutedCommand removeBookmarkCmd = new RoutedCommand();
             RoutedCommand launchGameCmd = new RoutedCommand();
-            RoutedCommand kyberLaunchGameCmd = new RoutedCommand();
-            RoutedCommand kyberSettingsGameCmd = new RoutedCommand();
             RoutedCommand focusAssetFilterCmd = new RoutedCommand();
 
             newCmd.InputGestures.Add(new KeyGesture(Key.N, ModifierKeys.Control));
@@ -110,8 +108,6 @@ namespace FrostyEditor
             addBookmarkCmd.InputGestures.Add(new KeyGesture(Key.B, ModifierKeys.Control));
             removeBookmarkCmd.InputGestures.Add(new KeyGesture(Key.B, ModifierKeys.Control | ModifierKeys.Shift));
             launchGameCmd.InputGestures.Add(new KeyGesture(Key.F5));
-            kyberLaunchGameCmd.InputGestures.Add(new KeyGesture(Key.F6));
-            kyberSettingsGameCmd.InputGestures.Add(new KeyGesture(Key.F7));
             focusAssetFilterCmd.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
 
             CommandBindings.Add(new CommandBinding(newCmd, newModMenuItem_Click));
@@ -124,13 +120,8 @@ namespace FrostyEditor
 
             if (ProfilesLibrary.EnableExecution)
             {
-                CommandBindings.Add(new CommandBinding(launchGameCmd, launchButton_Click));
-                //CommandBindings.Add(new CommandBinding(kyberLaunchGameCmd, kyberLaunchButton_Click));
-                CommandBindings.Add(new CommandBinding(kyberLaunchGameCmd, kyberGameLaunchButton_Click));
-                CommandBindings.Add(new CommandBinding(kyberSettingsGameCmd, kyberSettingsButton_Click));
-                launchButton.IsEnabled = true;
-                kyberLaunchButton.IsEnabled = true;
-                kyberGameLaunchButton.IsEnabled = true;
+                CommandBindings.Add(new CommandBinding(launchGameCmd, launchButton2_Click));
+                launchButton2.IsEnabled = true;
                 kyberSettingsButton.IsEnabled = true;
             }
 
@@ -371,6 +362,37 @@ namespace FrostyEditor
             loadOrderComboBox.SelectionChanged += (s, e) => {
                 KyberSettings.SelectedLoadOrder = loadOrderComboBox.SelectedItem?.ToString();
             };
+
+            launchTypeComboBox.Items.Add("Frosty Launch");
+            launchTypeComboBox.Items.Add("Kyber Launch");
+            launchTypeComboBox.Items.Add("Kyber Server");
+
+            launchTypeComboBox.SelectedIndex = launchTypeComboBox.Items.Contains(KyberSettings.LaunchType) ? launchTypeComboBox.Items.IndexOf(KyberSettings.LaunchType) : 0;
+
+            if (launchTypeComboBox.SelectedIndex > 0)
+            {
+                loadOrderComboBox.Visibility = Visibility.Visible;
+                kyberSettingsButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                loadOrderComboBox.Visibility = Visibility.Collapsed;
+                kyberSettingsButton.Visibility = Visibility.Collapsed;
+            }
+
+            launchTypeComboBox.SelectionChanged += (s, e) => {
+                KyberSettings.LaunchType = launchTypeComboBox.SelectedItem?.ToString();
+                if (launchTypeComboBox.SelectedIndex > 0)
+                {
+                    loadOrderComboBox.Visibility = Visibility.Visible;
+                    kyberSettingsButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    loadOrderComboBox.Visibility = Visibility.Collapsed;
+                    kyberSettingsButton.Visibility = Visibility.Collapsed;
+                }
+            };
         }
 
         private void logTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -409,6 +431,16 @@ namespace FrostyEditor
 
         private static ImageSource PropertiesImage = new ImageSourceConverter().ConvertFromString("pack://application:,,,/FrostyEditor;component/Images/Properties.png") as ImageSource;
 
+        private void launchButton2_Click(object sender, RoutedEventArgs e)
+        {
+            if (launchTypeComboBox.SelectedIndex == 0)
+                launchButton_Click(sender, e);
+            else if (launchTypeComboBox.SelectedIndex == 1)
+                kyberGameLaunchButton_Click(sender, e);
+            else if (launchTypeComboBox.SelectedIndex == 2)
+                kyberLaunchButton_Click(sender, e);
+        }
+
         private void launchButton_Click(object sender, RoutedEventArgs e)
         {
             if (!ProfilesLibrary.EnableExecution)
@@ -417,7 +449,7 @@ namespace FrostyEditor
             // setup ability to cancel the process
             CancellationTokenSource cancelToken = new CancellationTokenSource();
 
-            launchButton.IsEnabled = false;
+            launchButton2.IsEnabled = false;
 
             // get all mods
             List<string> modPaths = new List<string>();
@@ -512,11 +544,11 @@ namespace FrostyEditor
             }
 
             // remove editor mod
-            FileInfo editorMod = new FileInfo($"Mods/{ProfilesLibrary.ProfileName}/{editorModName}");
+            FileInfo editorMod = new($"Mods/{ProfilesLibrary.ProfileName}/{editorModName}");
             if (editorMod.Exists)
                 editorMod.Delete();
 
-            launchButton.IsEnabled = true;
+            launchButton2.IsEnabled = true;
 
             GC.Collect();
         }
@@ -700,7 +732,7 @@ namespace FrostyEditor
                 //
                 //  Execute kyber_cli.exe
                 //
-
+                App.Logger.Log("Launching Kyber Server");
                 string cliCommand = $"start_server --verbose --server-password \"amogus\" --debug --no-dedicated --server-name \"Test\" --map \"{KyberSettings.Level}\" --mode \"{KyberSettings.GameMode}\" --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\" --startup-commands \"{$@"{basePath}/Kyber-Commands.txt"}\"";
                 ProcessStartInfo startInfo = new(KyberSettings.CliDirectory)
                 {
@@ -826,7 +858,7 @@ namespace FrostyEditor
                 //
                 //  Execute kyber_cli.exe
                 //
-
+                App.Logger.Log("Launching Game with Kyber");
                 string cliCommand = $"start_game --verbose --raw-mods \"{$@"{basePath}/Kyber-Launch.json"}\"";
                 ProcessStartInfo startInfo = new(KyberSettings.CliDirectory)
                 {

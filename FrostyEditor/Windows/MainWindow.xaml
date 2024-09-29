@@ -281,11 +281,13 @@
                                 DockPanel.Dock="Left"
                                 RenderOptions.EdgeMode="Aliased">
                             <StackPanel Orientation="Horizontal"
-                                        Margin="6,2,6,2">
-                                <Button x:Name="launchButton"
+                                        Margin="6,0,6,0">
+                                <ComboBox x:Name="launchTypeComboBox" Width="105" Height="22" Margin="0,0,0,0" Padding="4,2,4,2"/>
+                                <ComboBox x:Name="loadOrderComboBox" Width="150" Height="22" Margin="2,0,0,0" Padding="4,2,4,2"/>
+                                <Button x:Name="launchButton2"
                                         Margin="0"
-                                        Click="launchButton_Click"
-                                        ToolTip="Launch game with current project"
+                                        Click="launchButton2_Click"
+                                        ToolTip="Launch"
                                         IsEnabled="false">
                                     <StackPanel Orientation="Horizontal"
                                                 Margin="4 0 4 0">
@@ -294,48 +296,6 @@
                                                Width="16" />
                                         <TextBlock Grid.Column="1"
                                                    Text="Launch"
-                                                   VerticalAlignment="Center"
-                                                   Margin="4 0 0 0" />
-                                    </StackPanel>
-                                </Button>
-                            </StackPanel>
-                        </Border>
-                        <!-- Kyber Launch -->
-                        <Border Background="{StaticResource ControlBackground}"
-                                Margin="1 0 0 0"
-                                DockPanel.Dock="Left"
-                                RenderOptions.EdgeMode="Aliased">
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="6,0,6,0">
-                                <ComboBox x:Name="loadOrderComboBox" Width="150" Height="22" Margin="0,0,0,0" Padding="4,2,4,2"/>
-                                <Button x:Name="kyberGameLaunchButton"
-                                        Margin="0"
-                                        Click="kyberGameLaunchButton_Click"
-                                        ToolTip="Launch game with Kyber"
-                                        IsEnabled="false">
-                                    <StackPanel Orientation="Horizontal"
-                                                Margin="4 0 4 0">
-                                        <Image Grid.Column="0"
-                                               Source="../Images/Play.png"
-                                               Width="16" />
-                                        <TextBlock Grid.Column="1"
-                                                   Text="Kyber Launch"
-                                                   VerticalAlignment="Center"
-                                                   Margin="4 0 0 0" />
-                                    </StackPanel>
-                                </Button>
-                                <Button x:Name="kyberLaunchButton"
-                                        Margin="0"
-                                        Click="kyberLaunchButton_Click"
-                                        ToolTip="Launch server with Kyber"
-                                        IsEnabled="false">
-                                    <StackPanel Orientation="Horizontal"
-                                                Margin="4 0 4 0">
-                                        <Image Grid.Column="0"
-                                               Source="../Images/Play.png"
-                                               Width="16" />
-                                        <TextBlock Grid.Column="1"
-                                                   Text="Kyber Server"
                                                    VerticalAlignment="Center"
                                                    Margin="4 0 0 0" />
                                     </StackPanel>

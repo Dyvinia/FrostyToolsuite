@@ -53,6 +53,11 @@ namespace FrostyEditor.Windows
             get => Config.Get<string>("Kyber_LaunchCommands", null, ConfigScope.Global)?.Split('$').ToList() ?? [];
             set => Config.Add("Kyber_LaunchCommands", string.Join("$", value.ToList()), ConfigScope.Global);
         }
+
+        public static string LaunchType {
+            get => Config.Get("LaunchType", "Kyber Launch", ConfigScope.Global);
+            set => Config.Add("LaunchType", value, ConfigScope.Global);
+        }
     }
 
     public class KyberJsonSettings
