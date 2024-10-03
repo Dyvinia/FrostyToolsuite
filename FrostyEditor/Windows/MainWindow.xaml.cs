@@ -741,6 +741,7 @@ namespace FrostyEditor
                     CreateNoWindow = false, // Show cmd window
                     WorkingDirectory = Path.GetDirectoryName(KyberSettings.CliDirectory) // Set the working directory here
                 };
+                startInfo.EnvironmentVariables["KYBER_ONLINE_MODE"] = "0";
                 Process.Start(startInfo);
             }
 

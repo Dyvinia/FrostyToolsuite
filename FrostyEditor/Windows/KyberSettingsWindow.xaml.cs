@@ -162,6 +162,7 @@ namespace FrostyEditor.Windows
                     team1AutoplayerCountComboBox.Items.Add(i);
                 }
                 team1AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots + KyberSettings.Team2Bots;
+                team2AutoplayerCountComboBox.SelectedIndex = 0;
             }
             else
             {
@@ -174,13 +175,22 @@ namespace FrostyEditor.Windows
                 {
                     team1AutoplayerCountComboBox.Items.Add(i);
                 }
-                team1AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots / 2 + KyberSettings.Team1Bots % 2;
-                team2AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots / 2;
+
+                if (KyberSettings.Team2Bots == 0)
+                {
+                    team1AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots / 2 + KyberSettings.Team1Bots % 2;
+                    team2AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots / 2;
+                }
+                else
+                {
+                    team1AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team1Bots;
+                    team2AutoplayerCountComboBox.SelectedIndex = KyberSettings.Team2Bots;
+                }
             }
 
             if (team1AutoplayerCountComboBox.SelectedIndex != -1)
                 KyberSettings.Team1Bots = team1AutoplayerCountComboBox.SelectedIndex;
-            if (team2AutoplayerCountComboBox.SelectedIndex != -1)
+            if (team2AutoplayerCountComboBox.SelectedIndex == -1)
                 KyberSettings.Team2Bots = team2AutoplayerCountComboBox.SelectedIndex;
         }
 
