@@ -4475,7 +4475,7 @@ namespace MeshSetPlugin
                             {
                                 App.AssetManager.RevertAsset(localEntry);
                             }
-                            logger.LogError(exp.Message);
+                            logger.LogError(exp.Message + Environment.NewLine + exp.StackTrace);
                         }
                     });
 
