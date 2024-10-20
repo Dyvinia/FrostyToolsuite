@@ -176,7 +176,7 @@ namespace Frosty.Core.Controls
                 if (index == -1)
                 {
                     index = modules.Count;
-                    modules.Add(new ClassSelectorModuleItem() { Name = moduleName, Classes = new List<ClassSelectorClassItem>() });
+                    modules.Add(new ClassSelectorModuleItem() { Name = moduleName, Classes = [], IsExpanded = filterText != "" });
                 }
 
                 ClassSelectorModuleItem module = modules[index];
