@@ -1213,7 +1213,11 @@ namespace FrostySdk
 
                     hash = Fnv1.HashString(currentString.ToLower());
                     if (!strings.ContainsKey(hash))
-                        strings.Add(hash, currentString);
+                        strings.Add(hash, currentString.ToLower());
+
+                    hash = Fnv1.HashString(currentString.ToUpper());
+                    if (!strings.ContainsKey(hash))
+                        strings.Add(hash, currentString.ToUpper());
 
                     logger?.Log("progress:" + (double)reader.Position / (double)reader.Length * 100.0);
                 }
