@@ -639,8 +639,13 @@ namespace FrostyEditor
                         }
 
                         task.Update("Exporting Mod");
+                        DateTime start = DateTime.Now;
                         ExportMod(editorSettings, $"Mods/Kyber/{editorModName}", true, cancelToken.Token);
-                        App.Logger.Log($"Editor Mod Saved As {editorModName}");
+                        int seconds = (int)(DateTime.Now - start).TotalSeconds;
+                        if (seconds > 1)
+                            App.Logger.Log($"Editor Mod Saved As {editorModName} in {seconds} seconds");
+                        else
+                            App.Logger.Log($"Editor Mod Saved As {editorModName}");
                     }
                     catch (OperationCanceledException)
                     {
@@ -793,8 +798,13 @@ namespace FrostyEditor
                         }
 
                         task.Update("Exporting Mod");
+                        DateTime start = DateTime.Now;
                         ExportMod(editorSettings, $"Mods/Kyber/{editorModName}", true, cancelToken.Token);
-                        App.Logger.Log($"Editor Mod Saved As {editorModName}");
+                        int seconds = (int)(DateTime.Now - start).TotalSeconds;
+                        if (seconds > 1)
+                            App.Logger.Log($"Editor Mod Saved As {editorModName} in {seconds} seconds");
+                        else
+                            App.Logger.Log($"Editor Mod Saved As {editorModName}");
                     }
                     catch (OperationCanceledException)
                     {
@@ -888,9 +898,16 @@ namespace FrostyEditor
 
         public void ExportMod(ModSettings modSettings, string filename, bool bSilent, CancellationToken cancelToken)
         {
+            DateTime start = DateTime.Now;
             m_project.WriteToMod(filename, modSettings, bSilent, cancelToken);
+            int seconds = (int)(DateTime.Now - start).TotalSeconds;
             if (!bSilent)
-                App.Logger.Log("Mod saved to {0}", filename);
+            {
+                if (seconds > 1)
+                    App.Logger.Log($"Mod saved to {filename} in {seconds} seconds");
+                else
+                    App.Logger.Log($"Mod saved to {filename}");
+            }
         }
 
         private void newModMenuItem_Click(object sender, RoutedEventArgs e)
